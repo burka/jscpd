@@ -6,7 +6,7 @@ import { printFiles, printOptions, printSupportedFormat } from './print';
 import { createHash } from "crypto";
 import { getStore } from './init/store';
 import { getSupportedFormats, Tokenizer } from '@jscpd/tokenizer';
-import { registerReporters } from './init/reporters';
+import { hasLlmReporter, registerReporters } from './init/reporters';
 import { registerSubscribers } from './init/subscribers';
 import { registerHooks } from './init/hooks';
 import {readJSONSync} from "fs-extra";
@@ -31,11 +31,13 @@ export const detectClones = (opts: IOptions, store: IStore<IMapFrame> | undefine
   registerSubscribers(options, detector);
   registerHooks(options, detector);
 
-  if (!options.silent) {
+  const suppressProgressOutput = options.silent || hasLlmReporter(options);
+
+  if (!suppressProgressOutput) {
     console.time(italic(grey(TIMER_LABEL)));
   }
   return detector.detect(files).then((clones: IClone[]) => {
-    if (!options.silent) {
+    if (!suppressProgressOutput) {
       console.timeEnd(italic(grey(TIMER_LABEL)));
     }
     return clones;
@@ -80,4 +82,3 @@ export async function jscpd(argv: string[], exitCallback?: (code: number) => {})
       });
   }
 }
-

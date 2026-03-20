@@ -138,16 +138,15 @@ export function prepareOptions(cli: Command): IOptions {
   result.listeners = result.listeners || [];
 
   if (result.silent) {
-    result.reporters = result.reporters
-      .filter(
-        (reporter) => !reporter.includes('console'),
-      )
-      .concat('silent');
+    result.reporters = result.reporters.filter((reporter) => !reporter.includes('console'));
+    result.reporters.push('silent');
   }
 
   if (result.threshold !== undefined) {
     result.reporters = [...result.reporters, 'threshold'];
   }
+
+  result.reporters = [...new Set(result.reporters)];
 
   return result;
 }

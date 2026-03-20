@@ -4,6 +4,7 @@ import {
   CSVReporter,
   InFilesDetector,
   JsonReporter,
+  LlmReporter,
   MarkdownReporter,
   SilentReporter,
   ThresholdReporter,
@@ -27,7 +28,12 @@ const reporters: Record<string, any> = {
   silent: SilentReporter,
   threshold: ThresholdReporter,
   xcode: XcodeReporter,
+  llm: LlmReporter,
   sarif: SarifReporter,
+}
+
+export function hasLlmReporter(options: IOptions): boolean {
+  return options.reporters.includes('llm');
 }
 
 export function registerReporters(options: IOptions, detector: InFilesDetector): void {
